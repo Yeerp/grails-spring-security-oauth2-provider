@@ -34,13 +34,14 @@ grails.project.dependency.resolution = {
 //		compile('org.springframework.security:spring-security-crypto:3.1.4.RELEASE') {
 //			excludes 'spring-core', 'commons-logging'
 //		}
-		compile 'org.springframework.security.oauth:spring-security-oauth2:1.0.4.RELEASE', {
-			transitive = false
-		}
-		compile 'org.springframework.security:spring-security-config:3.0.7.RELEASE', {
-			excludes 'spring-core', 'spring-context', 'spring-aop', 'spring-web',
-					'aspectjweaver', 'servlet-api', 'commons-logging', 'aopalliance'
-		}
+		compile 'org.springframework.security.oauth:spring-security-oauth2:1.0.5.RELEASE', {
+            excludes "spring-security-core", "spring-security-web"
+        }
+
+        compile 'org.springframework.security:spring-security-config:3.0.7.RELEASE', {
+            excludes 'spring-core', 'spring-context', 'spring-aop', 'spring-web',
+                    'aspectjweaver', 'servlet-api', 'commons-logging', 'aopalliance'
+        }
 	}
 	
 	plugins {
@@ -60,6 +61,6 @@ grails.project.dependency.resolution = {
 		test ':codenarc:0.15', {
 			export = false
 		}
-		compile ':spring-security-core:1.2.7.3'
+		compile ':spring-security-core:2.0-RC2'
 	}
 }

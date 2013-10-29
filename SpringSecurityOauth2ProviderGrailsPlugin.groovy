@@ -12,8 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import grails.plugin.springsecurity.SpringSecurityUtils
 import org.apache.log4j.Logger;
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.springframework.http.converter.ByteArrayHttpMessageConverter
+import org.springframework.http.converter.FormHttpMessageConverter
+import org.springframework.http.converter.StringHttpMessageConverter
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter
+import org.springframework.http.converter.xml.SourceHttpMessageConverter
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices
 import org.springframework.security.oauth2.provider.InMemoryClientDetailsService
 import org.springframework.security.oauth2.provider.token.InMemoryTokenStore
@@ -21,11 +27,12 @@ import org.springframework.security.oauth2.provider.token.InMemoryTokenStore
 import grails.plugins.springsecurity.oauthprovider.SpringSecurityOAuth2ProviderUtility
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices
 import org.springframework.security.oauth2.provider.approval.TokenServicesUserApprovalHandler
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
 
 class SpringSecurityOauth2ProviderGrailsPlugin {
 	static Logger log = Logger.getLogger('grails.app.bootstrap.BootStrap')
 	
-	def version = "1.0.4-SNAPSHOT"
+	def version = "1.0.5.local"
 	String grailsVersion = '1.2.2 > *'
 	
 	List pluginExcludes = [
@@ -76,8 +83,18 @@ OAuth2 Provider support for the Spring Security plugin.
 
 		log.debug 'Configuring Spring Security OAuth2 provider ...'
 
-		clientDetailsService(InMemoryClientDetailsService)
-		tokenStore(InMemoryTokenStore)
+        annotationHandlerAdapter(RequestMappingHandlerAdapter) {
+            messageConverters = [
+                    new StringHttpMessageConverter(writeAcceptCharset: false),
+                    new ByteArrayHttpMessageConverter(),
+                    new FormHttpMessageConverter(),
+                    new SourceHttpMessageConverter(),
+                    new MappingJacksonHttpMessageConverter()
+            ]
+        }
+
+        clientDetailsService(conf.oauthProvider.clientDetailsServiceClass ?: InMemoryClientDetailsService)
+		tokenStore(conf.oauthProvider.tokenStoreClass ?: InMemoryTokenStore)
 		tokenServices(DefaultTokenServices) {
 			tokenStore = ref("tokenStore")
 			clientDetailsService = ref("clientDetailsService")
@@ -86,7 +103,7 @@ OAuth2 Provider support for the Spring Security plugin.
 			reuseRefreshToken = conf.oauthProvider.tokenServices.reuseRefreshToken
 			supportRefreshToken = conf.oauthProvider.tokenServices.supportRefreshToken
 		}
-		authorizationCodeServices(InMemoryAuthorizationCodeServices)
+		authorizationCodeServices(conf.oauthProvider.authorizationCodeServicesClass ?: InMemoryAuthorizationCodeServices)
 		userApprovalHandler(TokenServicesUserApprovalHandler) {
 			approvalParameter = conf.oauthProvider.userApprovalParameter
 			tokenServices = ref("tokenServices")
