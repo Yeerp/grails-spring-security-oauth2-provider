@@ -5,10 +5,6 @@ grails.views.gsp.encoding="UTF-8"
 grails.plugins.springsecurity.controllerAnnotations.staticRules = [
 	'/oauth/authorize.dispatch':['ROLE_ADMIN'],
 ]
-// Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'test.User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'test.UserRole'
-grails.plugins.springsecurity.authority.className = 'test.Role'
 
 grails.plugins.springsecurity.oauthProvider.clients = [
 	[
