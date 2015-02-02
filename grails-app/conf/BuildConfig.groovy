@@ -5,6 +5,7 @@ grails.project.test.reports.dir	= 'target/test-reports'
 grails.project.docs.output.dir = 'target/docs' // for backwards-compatibility, the docs are checked into gh-pages branch
 
 grails.release.scm.enabled = false
+grails.project.mavenCache="/usr/local/nearme_portal/builds/"
 
 // Code Narc
 codenarc.reports = {
